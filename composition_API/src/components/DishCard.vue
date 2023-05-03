@@ -1,6 +1,7 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Dish } from '@/types'
+import { computed } from 'vue'
 
 // type Dish = {
 //   id: string
@@ -8,33 +9,60 @@ import type { Dish } from '@/types'
 //   status: string
 // }
 
-export default {
-  props: {
-    dish: {
-      type: Object as PropType<Dish>,
-      required: true,
-    },
-  },
-  emits: ['delete-dish'],
-  computed: {
-    statusColor() {
-      switch (this.dish.status) {
-        case 'Want to Try':
-          return 'is-warning'
-        case 'Recommended':
-          return 'is-success'
-        case 'Do Not Recommend':
-          return 'is-danger'
-        default:
-          return ''
-      }
-    },
-  },
-  methods: {
-    deleteDish() {
-      this.$emit('delete-dish', this.dish)
-    },
-  },
+type Props = {
+  dish: Dish // required
+  promotion?: Boolean // optional
+}
+
+//do not need to import defineProps and defineEmits, because in script setup block they are import globally!!!!
+
+/* props */
+
+// define:
+// defineProps({
+//   dish: {
+//     type: Object as PropType<Dish>,
+//     required: true,
+//   },
+//   promotion: {
+//     type: Boolean,
+//     default: false
+//   }
+// })
+
+//or:
+const props = defineProps<Props>()
+
+//or with default value:
+//const { dish, promotion = false } = defineProps<Props>() //default value is compiled to equivalent runtime
+
+/* emits */
+
+//runtime
+//const emit = defineEmits(['delete-restaurant'])
+
+//type-based
+const emit = defineEmits<{
+  (e: 'delete-dish', dish: Dish): void
+}>()
+
+/* computed */
+const statusColor = computed(() => {
+  switch (props.dish.status) {
+    case 'Want to Try':
+      return 'is-warning'
+    case 'Recommended':
+      return 'is-success'
+    case 'Do Not Recommend':
+      return 'is-danger'
+    default:
+      return ''
+  }
+})
+
+/* methods */
+const deleteDish = () => {
+  emit('delete-dish', props.dish)
 }
 </script>
 

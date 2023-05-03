@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Restaurant } from '@/types'
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
 
 // type Restaurant = {
 //   id: string
@@ -15,6 +15,8 @@ type Props = {
   restaurant: Restaurant // required
   promotion?: Boolean // optional
 }
+
+//do not need to import defineProps and defineEmits, because in script setup block they are import globally!!!!
 
 /* props */
 
@@ -32,10 +34,19 @@ type Props = {
 
 //or:
 const props = defineProps<Props>()
+
 //or with default value:
 //const { restaurant, promotion = false } = defineProps<Props>() //default value is compiled to equivalent runtime
 
-// emits: ['delete-restaurant'],
+/* emits */
+
+//runtime
+//const emit = defineEmits(['delete-restaurant'])
+
+//type-based
+const emit = defineEmits<{
+  (e: 'delete-restaurant', restaurant: Restaurant): void
+}>()
 
 /* computed */
 const statusColor = computed(() => {
@@ -53,7 +64,7 @@ const statusColor = computed(() => {
 
 /* methods */
 const deleteRestaurant = () => {
-  //this.$emit('delete-restaurant', this.restaurant)
+  emit('delete-restaurant', props.restaurant)
 }
 </script>
 
