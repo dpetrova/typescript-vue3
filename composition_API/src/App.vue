@@ -11,7 +11,7 @@ export default {
 </script>
 
 <template>
-  <TheNavbar />
+  <TheNavbar tagline="Enjoy the meal" />
   <RouterView />
   <TheFooter />
 </template>

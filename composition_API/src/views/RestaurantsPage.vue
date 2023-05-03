@@ -1,3 +1,4 @@
+<!-- using defineComonent -->
 <script lang="ts">
 import NewRestaurantForm from '../components/NewRestaurantForm.vue'
 import RestaurantCard from '../components/RestaurantCard.vue'

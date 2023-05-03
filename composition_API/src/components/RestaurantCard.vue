@@ -1,6 +1,7 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Restaurant } from '@/types'
+import { ref, computed, onMounted } from 'vue'
 
 // type Restaurant = {
 //   id: string
@@ -10,33 +11,49 @@ import type { Restaurant } from '@/types'
 //   status: string
 // }
 
-export default {
-  props: {
-    restaurant: {
-      type: Object as PropType<Restaurant>,
-      required: true,
-    },
-  },
-  emits: ['delete-restaurant'],
-  computed: {
-    statusColor() {
-      switch (this.restaurant.status) {
-        case 'Want to Try':
-          return 'is-warning'
-        case 'Recommended':
-          return 'is-success'
-        case 'Do Not Recommend':
-          return 'is-danger'
-        default:
-          return ''
-      }
-    },
-  },
-  methods: {
-    deleteRestaurant() {
-      this.$emit('delete-restaurant', this.restaurant)
-    },
-  },
+type Props = {
+  restaurant: Restaurant // required
+  promotion?: Boolean // optional
+}
+
+/* props */
+
+// define:
+// defineProps({
+//   restaurant: {
+//     type: Object as PropType<Restaurant>,
+//     required: true,
+//   },
+//   promotion: {
+//     type: Boolean,
+//     default: false
+//   }
+// })
+
+//or:
+const props = defineProps<Props>()
+//or with default value:
+//const { restaurant, promotion = false } = defineProps<Props>() //default value is compiled to equivalent runtime
+
+// emits: ['delete-restaurant'],
+
+/* computed */
+const statusColor = computed(() => {
+  switch (props.restaurant.status) {
+    case 'Want to Try':
+      return 'is-warning'
+    case 'Recommended':
+      return 'is-success'
+    case 'Do Not Recommend':
+      return 'is-danger'
+    default:
+      return ''
+  }
+})
+
+/* methods */
+const deleteRestaurant = () => {
+  //this.$emit('delete-restaurant', this.restaurant)
 }
 </script>
 

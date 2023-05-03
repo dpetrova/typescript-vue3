@@ -1,18 +1,26 @@
-<script>
+<script lang="ts">
 import { v4 as uuidv4 } from 'uuid'
+import { defineComponent, ref, computed, onMounted } from 'vue'
+import type { Restaurant } from '@/types'
+import { restaurantStatusList } from '@/constants'
 
-export default {
+export default defineComponent({
   emits: ['add-new-restaurant', 'cancel-new-restaurant'],
-  data: () => ({
-    newRestaurant: {
+  setup() {
+    const newRestaurant = ref<Restaurant>({
       id: uuidv4(),
       name: '',
       address: '',
       website: '',
       status: 'Want to Try',
-    },
-  }),
-}
+    })
+
+    return {
+      newRestaurant,
+      restaurantStatusList,
+    }
+  },
+})
 </script>
 
 <template>
