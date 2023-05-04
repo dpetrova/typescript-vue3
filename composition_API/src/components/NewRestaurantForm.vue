@@ -1,25 +1,51 @@
-<script lang="ts">
+<script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid'
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import type { Restaurant } from '@/types'
 import { restaurantStatusList } from '@/constants'
 
-export default defineComponent({
-  emits: ['add-new-restaurant', 'cancel-new-restaurant'],
-  setup() {
-    const newRestaurant = ref<Restaurant>({
-      id: uuidv4(),
-      name: '',
-      address: '',
-      website: '',
-      status: 'Want to Try',
-    })
+/* emits */
 
-    return {
-      newRestaurant,
-      restaurantStatusList,
-    }
-  },
+//runtime
+//const emit = defineEmits(['add-new-restaurant', 'cancel-new-restaurant'])
+
+//type-based
+const emit = defineEmits<{
+  (e: 'add-new-restaurant', restaurant: Restaurant): void
+  (e: 'cancel-new-restaurant'): void
+}>()
+
+/* data */
+const newRestaurant = ref<Restaurant>({
+  id: uuidv4(),
+  name: '',
+  address: '',
+  website: '',
+  status: 'Want to Try',
+})
+
+/* methods */
+const addRestaurant = () => {
+  emit('add-new-restaurant', newRestaurant.value)
+}
+const cancelRestaurant = () => {
+  emit('cancel-new-restaurant')
+}
+const updateNameOnSpacePress = (event: InputEvent) => {
+  // console.log(event.data)
+  // console.log((event.target as HTMLInputElement).value)
+  if (event.data === ' ') {
+    newRestaurant.value.name = (event.target as HTMLInputElement).value
+  }
+}
+
+/* refs */
+const elNameInput = ref<HTMLInputElement | null>(null)
+
+/* lifecycle */
+onMounted(() => {
+  // auto focus on the name input
+  elNameInput.value?.focus()
 })
 </script>
 
@@ -30,11 +56,19 @@ export default defineComponent({
         <label for="name" class="label">Name</label>
         <div class="control">
           <input
-            :value="newRestaurant.name"
-            @keyup.space="updateName"
+            v-model="newRestaurant.name"
             type="text"
             class="input is-large"
-            placeholder="Beignet and the Jets"
+            placeholder="Immidiately update"
+            required
+            ref="elNameInput"
+          />
+          <input
+            :value="newRestaurant.name"
+            @input="updateNameOnSpacePress"
+            type="text"
+            class="input is-large"
+            placeholder="Update on space press"
             required
             ref="elNameInput"
           />
@@ -58,8 +92,8 @@ export default defineComponent({
       </div>
       <div class="field">
         <div class="buttons">
-          <button @click="$emit('add-new-restaurant', newRestaurant)" class="button is-success">Create</button>
-          <button @click="$emit('cancel-new-restaurant')" class="button is-light">Cancel</button>
+          <button @click="addRestaurant" class="button is-success">Create</button>
+          <button @click="cancelRestaurant" class="button is-light">Cancel</button>
         </div>
       </div>
     </div>

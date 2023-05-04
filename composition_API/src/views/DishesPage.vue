@@ -6,35 +6,27 @@ import SideMenu from '../components/SideMenu.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Dish } from '@/types'
+//import global store composable
+import { useDishStore } from '@/stores/DishStore'
+
+//store
+const dishStore = useDishStore()
 
 // reactive data
 const filterText = ref<string>('')
 const showNewForm = ref<boolean>(false)
-const dishList = ref<Dish[]>([
-  {
-    id: '7d9f3f17-964a-4e82-98e5-ecbba4d709a1',
-    name: 'Ghost Pepper Poppers',
-    status: 'Want to Try',
-  },
-  {
-    id: '5c986b74-fa02-4a22-98f2-b1ff3559e85e',
-    name: 'A Little More Chowder Now',
-    status: 'Recommended',
-  },
-  {
-    id: 'c113411d-1589-414f-a283-daf7eedb631e',
-    name: 'Full Laptop Battery',
-    status: 'Do Not Recommend',
-  },
-])
 
 // computed properties
+const dishList = computed((): Dish[] => {
+  //get list of dishes from store
+  return dishStore.list
+})
 const filteredDishList = computed((): Dish[] => {
-  return dishList.value.filter((dish) => {
+  return dishList.value.filter((dish: Dish) => {
     if (dish.name) {
       return dish.name.toLowerCase().includes(filterText.value.toLowerCase())
     } else {
-      return dishList.value
+      return dishList
     }
   })
 })
@@ -44,16 +36,20 @@ const numberOfDishes = computed((): number => {
 
 // methods
 const addDish = (payload: Dish): void => {
-  dishList.value.push(payload)
+  dishStore.addDish(payload) // call store action
   hideForm()
-}
-const deleteDish = (payload: Dish): void => {
-  dishList.value = dishList.value.filter((dish) => {
-    return dish.id !== payload.id
-  })
 }
 const hideForm = (): void => {
   showNewForm.value = false
+}
+const updateFilterText = (event: KeyboardEvent): void => {
+  //console.log(event.code)
+  if (event.code === 'Enter') {
+    filterText.value = (event.target as HTMLInputElement).value
+  }
+}
+const updateFilterTextOnPressEnter = (event: KeyboardEvent): void => {
+  filterText.value = (event.target as HTMLInputElement).value
 }
 
 // lifecycle
@@ -91,7 +87,24 @@ onMounted(() => {
             <div class="level-item is-hidden-tablet-only">
               <div class="field has-addons">
                 <p class="control">
+                  <!-- search on typing -->
                   <input class="input" type="text" placeholder="Dish name" v-model="filterText" />
+                  <!-- search on Enter press -->
+                  <!-- <input
+                    class="input"
+                    type="text"
+                    placeholder="Dish name"
+                    :value="filterText"
+                    @keyup="updateFilterText"
+                  /> -->
+                  <!-- search on Enter press using modifier -->
+                  <!-- <input
+                    class="input"
+                    type="text"
+                    placeholder="Dish name"
+                    :value="filterText"
+                    @keyup.enter="updateFilterTextOnPressEnter"
+                  /> -->
                 </p>
                 <p class="control">
                   <button class="button">Search</button>
@@ -107,7 +120,7 @@ onMounted(() => {
         <!-- Display Results -->
         <div v-else class="columns is-multiline">
           <div v-for="item in filteredDishList" class="column is-full" :key="`item-${item}`">
-            <DishCard :dish="item" @delete-dish="deleteDish" />
+            <DishCard :dish="item" @delete-dish="dishStore.deleteDish" />
           </div>
         </div>
       </div>

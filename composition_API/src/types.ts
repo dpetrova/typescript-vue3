@@ -11,7 +11,8 @@ export type Restaurant = {
 export type Dish = {
     id: string
     name: string
-    status: Status
+    status: Status,
+    diet?: Diet
   }
 
   type Diet = 'Vegetarian' | 'Pescetarian' | 'Keto' | ''
