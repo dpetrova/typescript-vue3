@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Dish } from '@/types'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 // type Dish = {
 //   id: string
@@ -44,6 +44,7 @@ const props = defineProps<Props>()
 //type-based
 const emit = defineEmits<{
   (e: 'delete-dish', dish: Dish): void
+  (e: 'edit-dish', dish: Dish): void
 }>()
 
 /* computed */
@@ -61,6 +62,9 @@ const statusColor = computed(() => {
 })
 
 /* methods */
+const editDish = () => {
+  emit('edit-dish', props.dish)
+}
 const deleteDish = () => {
   emit('delete-dish', props.dish)
 }
@@ -80,7 +84,8 @@ const deleteDish = () => {
           <span class="tag" :class="statusColor">{{ dish.status }}</span>
         </p>
         <div>
-          <button @click="deleteDish" class="button is-small is-danger is-light">Delete</button>
+          <button @click="editDish" class="button is-small is-info is-light">Edit</button>
+          <button @click="deleteDish" class="button is-small is-danger is-dark">Delete</button>
         </div>
       </div>
     </div>

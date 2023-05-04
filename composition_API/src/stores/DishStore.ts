@@ -29,12 +29,24 @@ export const useDishStore = defineStore('DishStore', {
     getters: {
         numberOfDishes: (state): number => {
           return state.list.length
+        },
+        //getter with arguments -> function returning a function
+        dishById: (state) => {          
+          return (id: string) => state.list.find(x => x.id === id) || null
         }
     },
     //methods
     actions: {
         addDish(payload: Dish): void {
           this.list.push(payload)
+        },
+        updateDish(payload: Dish): void {
+          Object.assign(
+            this.list[
+              this.list.findIndex(x => x.id === payload.id)
+            ],
+            payload
+          )
         },
         deleteDish(payload: Dish): void {
           this.list = this.list.filter((dish) => {

@@ -5,6 +5,7 @@ type StateShape = {
     list: Restaurant[]
 }
 
+//create a composable
 export const useRestaurantStore = defineStore('RestaurantStore', {
     //data
     state: (): StateShape => ({
