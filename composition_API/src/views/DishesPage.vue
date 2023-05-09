@@ -18,7 +18,7 @@ type ShowFormState = '' | 'new' | 'edit'
 // reactive data
 const filterText = ref<string>('')
 const showForm = ref<ShowFormState>('')
-const editDishId = ref('')
+const editDishId = ref('') // Type inference (the ability of the TypeScript compiler to automatically determine the type of a variable based on the value that is assigned to it)
 
 // computed properties
 const dishList = computed((): Dish[] => {

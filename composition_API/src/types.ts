@@ -1,5 +1,6 @@
 import type { restaurantStatusList } from '@/constants'
 
+// Type Aliases: create custom types
 export type Restaurant = {
     id: string
     name: string
@@ -15,7 +16,7 @@ export type Dish = {
     diet?: Diet
   }
 
-  type Diet = 'Vegetarian' | 'Pescetarian' | 'Keto' | ''
+type Diet = 'Vegetarian' | 'Pescetarian' | 'Keto' | ''
 // type Status = "Want to Try" | "Recommended" | "Do Not Recommend" 
 
 //convert JS array into a custom type
